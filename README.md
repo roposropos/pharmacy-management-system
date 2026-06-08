@@ -115,8 +115,7 @@ pharmacy-management-system/
 
 Detailed documentation is available in Polish:
 
-- [Full project report](docs/reference/project-report-pl.pdf)
-- [Project presentation](docs/reference/project-presentation-pl.pdf)
+- [Full project report](docs/reference/pharmacy-management-system-report-pl.pdf)
 
 The documentation includes requirements, use cases, database diagrams, normalization, integrity constraints, views, indexes, functions, triggers, security mechanisms and testing scenarios.
 
