@@ -1,91 +1,78 @@
 # Pharmacy Management System
 
-A desktop application for managing the daily operations of a local pharmacy.
-The system was developed as a **group university project at Wrocław University of Science and Technology (Politechnika Wrocławska)**.
+A desktop application supporting the daily operations of a local pharmacy. The system was developed as a **group university project at Wrocław University of Science and Technology (Politechnika Wrocławska)** as part of a database systems course.
+
+The client application is written in **C#** with **Avalonia UI** and communicates with a **PostgreSQL** database through ODBC. The project combines a desktop interface with a relational database model covering inventory, prescriptions, sales, deliveries, orders, reporting and role-based access.
+
+> This is an academic portfolio project, not a production-ready medical system.
 
 ## Authors
 
-* Robert Tworek
-* Kacper Wajda
-* Michał Gładkojć
+- Robert Tworek
+- Kacper Wajda
+- Michał Gładkojć
 
-## Overview
+## Screenshots
 
-The application supports the most important processes involved in running a small pharmacy, including:
+### Role-based dashboard
 
-* management of medicines and pharmaceutical ingredients;
-* customer and prescription records;
-* sales and purchase documents;
-* warehouse stock control;
-* deliveries and supplier management;
-* orders to pharmaceutical wholesalers;
-* reporting and audit logs;
-* user roles and access control.
+The dashboard exposes modules according to the logged-in user's role.
 
-The system is designed as a local desktop application connected to a PostgreSQL database.
+![Role-based dashboard](docs/screenshots/role-based-dashboard.png)
 
-## Technologies
+### Product management
 
-* C#
-* .NET
-* Avalonia UI
-* PostgreSQL
-* ODBC
-* MVVM-style application structure
-* pgModeler
-* pgAdmin
+The products module supports browsing and managing medicine data, variants and availability.
+
+![Products module](docs/screenshots/products-module.png)
+
+### Reports
+
+The reporting module presents data retrieved from PostgreSQL reporting views.
+
+![Reports module](docs/screenshots/reports-module.png)
+
+### Input validation
+
+The application validates user input and displays readable error messages.
+
+![Validation example](docs/screenshots/validation-example.png)
 
 ## Main Features
 
-### Medicines and inventory
+- login flow and role-based navigation for a pharmacist and a pharmacy manager;
+- management of medicines, variants, batches and pharmaceutical ingredients;
+- customer, doctor, address and phone-number records;
+- prescription processing for ready-made and compounded medicines;
+- sales documents and warehouse stock updates;
+- delivery registration, supplier management and wholesale orders;
+- reporting views for inventory and daily sales;
+- input validation and user-friendly error messages;
+- database-side audit concept for important operations.
 
-* management of medicines, variants and batches;
-* tracking available and reserved quantities;
-* expiry date monitoring;
-* support for pharmaceutical ingredients used in compounded medicines.
+## Technologies
 
-### Customers and prescriptions
+- C# / .NET
+- Avalonia UI
+- PostgreSQL
+- ODBC
+- MVVM-style application structure
+- pgModeler
+- pgAdmin
 
-* customer records;
-* doctor records;
-* prescription processing;
-* support for both ready-made and compounded medicines.
+## Architecture
 
-### Sales and deliveries
+```mermaid
+flowchart TD
+    UI[Avalonia UI Views] --> VM[ViewModels and application logic]
+    VM --> REP[Repositories]
+    REP --> ODBC[ODBC connection]
+    ODBC --> DB[(PostgreSQL database)]
+```
 
-* sales document handling;
-* warehouse stock updates after sales;
-* delivery registration;
-* supplier management;
-* manual and automatic order preparation.
+The separation keeps database access outside the UI layer and makes the codebase easier to maintain and extend.
 
-### Reporting
-
-The system includes reporting views for:
-
-* current medicine inventory;
-* current pharmaceutical ingredient inventory;
-* daily sales;
-* warehouse status;
-* ingredient consumption.
-
-### Roles and Security
-
-The application supports two user roles:
-
-* **Pharmacist** — daily operations such as sales, prescription processing and warehouse updates;
-* **Pharmacy manager** — extended access to reports, corrections, orders and administrative functions.
-
-The database includes:
-
-* role-based permissions;
-* validation constraints;
-* primary and foreign keys;
-* `UNIQUE`, `NOT NULL` and `CHECK` constraints;
-* indexes for frequently searched fields;
-* operation logging through functions and triggers.
-
-## Database Structure
+## Database Design
 
 The PostgreSQL database is divided into three logical schemas:
 
@@ -95,59 +82,74 @@ magazyn      - deliveries, suppliers, batches, ingredients and orders
 uzytkownicy  - users, roles and operation logs
 ```
 
-The project includes relational modelling, data normalization and mechanisms designed to maintain data integrity.
+The database design includes:
 
-## Application Structure
+- relational modelling and normalization;
+- primary and foreign keys;
+- `UNIQUE`, `NOT NULL` and `CHECK` constraints;
+- indexes for frequently searched fields;
+- reporting views;
+- role-based permissions;
+- functions and triggers for operation logging.
+
+## Project Structure
 
 ```text
 pharmacy-management-system/
 ├── Assets/
-├── Models/
-├── Repositories/
-├── Services/
-├── ViewModels/
-├── Views/
-├── database/
+├── Models/             # domain models
+├── Repositories/       # database access layer
+├── Services/           # validation services
+├── ViewModels/         # application logic and UI state
+├── Views/              # Avalonia UI views and reusable components
+├── database/           # database export placeholder
 ├── docs/
-├── App.axaml
-├── App.axaml.cs
+│   ├── screenshots/    # selected interface screenshots
+│   └── reference/      # full report and presentation in Polish
+├── .env.example        # example database environment variables
 ├── Apteka.csproj
-├── Apteka.sln
-└── README.md
-```
-
-## Screenshots
-
-Screenshots of the application interface and selected database diagrams are available in:
-
-```text
-docs/screenshots/
+└── Apteka.sln
 ```
 
 ## Documentation
 
-The full project report and presentation are available in:
+Detailed documentation is available in Polish:
 
-```text
-docs/reference/
+- [Full project report](docs/reference/project-report-pl.pdf)
+- [Project presentation](docs/reference/project-presentation-pl.pdf)
+
+The documentation includes requirements, use cases, database diagrams, normalization, integrity constraints, views, indexes, functions, triggers, security mechanisms and testing scenarios.
+
+## Running the Application
+
+### Requirements
+
+- .NET SDK
+- PostgreSQL
+- PostgreSQL Unicode ODBC driver
+- database schema and sample data matching the project model
+
+Set the database connection variables in your shell:
+
+```bash
+export APTEKA_DB_DRIVER="PostgreSQL Unicode"
+export APTEKA_DB_HOST="localhost"
+export APTEKA_DB_PORT="5432"
+export APTEKA_DB_NAME="Apteka"
+export APTEKA_DB_USER="postgres"
+export APTEKA_DB_PASSWORD="your-password"
 ```
 
-The documentation contains a detailed description of:
+Then run:
 
-* requirements;
-* use cases;
-* database diagrams;
-* normalization;
-* data integrity constraints;
-* views, functions and triggers;
-* security mechanisms;
-* testing scenarios.
+```bash
+dotnet restore
+dotnet run
+```
 
-## Database Setup
+## Current Limitation
 
-The application requires a local PostgreSQL instance.
-
-The final exported database schema and sample data should be added to:
+The original submitted source package did not contain the final PostgreSQL schema export or demo seed data. The application source code and full project documentation are included, but a fully reproducible local setup still requires adding:
 
 ```text
 database/
@@ -155,8 +157,6 @@ database/
 └── seed.sql
 ```
 
-## Academic Context
+## Public Repository Cleanup
 
-This repository contains an educational project developed as part of a database systems course at Wrocław University of Science and Technology.
-
-The goal of the project was to design and implement a structured database-backed desktop application reflecting realistic business processes in a local pharmacy.
+The public portfolio version removes local database connection details and avoids printing passwords or password hashes to the console. Database connection values are provided through environment variables.
