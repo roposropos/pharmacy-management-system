@@ -1,0 +1,24 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="using:Apteka.Views.Components"
+        xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia">
+    <Design.PreviewWith>
+        <controls:IconButton Text="Test" />
+    </Design.PreviewWith>
+
+    <Style Selector="controls|IconButton">
+        <Setter Property="Background" Value="{StaticResource ButtonBackground}" />
+        <Setter Property="MinWidth" Value="30" />
+        <Setter Property="MinHeight" Value="30" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Button Command="{TemplateBinding Command}" CommandParameter="{TemplateBinding CommandParameter}">
+                    <StackPanel Orientation="Horizontal" Spacing="5">
+                        <materialIcons:MaterialIcon Kind="{TemplateBinding Icon}" />
+                        <TextBlock Text="{TemplateBinding Text}" />
+                    </StackPanel>
+                </Button>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+</Styles>

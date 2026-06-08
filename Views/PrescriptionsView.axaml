@@ -1,0 +1,39 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:vm="using:Apteka.ViewModels"
+             xmlns:c="using:Apteka.Views.Components"
+             xmlns:apteka="clr-namespace:Apteka"
+             x:Class="Apteka.Views.PrescriptionsView"
+             x:DataType="vm:PrescriptionsViewModel">
+    <UserControl.Resources>
+    </UserControl.Resources>
+    <Grid RowDefinitions="Auto, *, Auto">
+        <!-- Header -->
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="10" Spacing="10">
+            <c:IconButton Text="Wstecz" Icon="ArrowLeft" Command="{Binding GoBack}" />
+            <TextBlock Text="Realizacja Recept" FontSize="24" FontWeight="Bold" VerticalAlignment="Center" />
+        </StackPanel>
+        <DataGrid Grid.Row="1" ItemsSource="{Binding Items}"
+                  AutoGenerateColumns="False" IsReadOnly="True" SelectedItem="{Binding SelectedItem}"
+                  Margin="10">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="60" />
+                <DataGridTextColumn Header="Data Wystawiania"
+                                    Binding="{Binding DataWystawienia, StringFormat=\{0:yyyy-MM-dd\}}" Width="150" />
+                <DataGridTextColumn Header="Data Realizacji"
+                                    Binding="{Binding DataRealizacji, StringFormat=\{0:yyyy-MM-dd\}}" Width="150" />
+                <DataGridTextColumn Header="Data Ważności"
+                                    Binding="{Binding DataWaznosci, StringFormat=\{0:yyyy-MM-dd\}}" Width="150" />
+                <DataGridTextColumn Header="Kod" Binding="{Binding Kod}" Width="*" />
+                <DataGridTextColumn Header="Poprzednia Recepta" Binding="{Binding PoprzedniaReceptaId}" />
+            </DataGrid.Columns>
+        </DataGrid>
+        <StackPanel Grid.Row="2" Orientation="Horizontal" Spacing="10" HorizontalAlignment="Right" Margin="10, 10">
+            <Button Content="Znajdz poprzednią" IsVisible="{Binding SelectedItem}" Command="{Binding FindPrevious}" />
+            <Button Content="Realizuj" Command="{Binding Realize}" />
+        </StackPanel>
+    </Grid>
+</UserControl>

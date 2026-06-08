@@ -1,0 +1,23 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:Apteka.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="Apteka.Views.Components.SearchWidget"
+             x:DataType="vm:ISearchableViewModel">
+    <StackPanel Orientation="Vertical">
+        <Grid ColumnDefinitions="Auto, *, Auto" ColumnSpacing="10" Margin="10">
+            <TextBlock FontSize="16" Text="Szukaj: " VerticalAlignment="Center" />
+            <TextBox Grid.Column="1" Watermark="wyszukaj" Text="{Binding SearchText}">
+                <TextBox.KeyBindings>
+                    <KeyBinding Gesture="Enter" Command="{Binding SearchCommand}" />
+                </TextBox.KeyBindings>
+            </TextBox>
+            <Button Grid.Column="2" Content="Filtruj" Command="{Binding SearchCommand}" />
+        </Grid>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="10, 0">
+            <Button Content="Wyczyść" Command="{Binding ClearSearchCommand}" />
+        </StackPanel>
+    </StackPanel>
+</UserControl>
