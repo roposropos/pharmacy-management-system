@@ -9,8 +9,6 @@ A cross-platform desktop application for managing the daily work of a local phar
 
 The project was developed as a **group university project at Wroclaw University of Science and Technology** for a database systems course. It combines a C# desktop client built with **Avalonia UI** and a relational **PostgreSQL** database accessed through ODBC.
 
-> This is an academic portfolio project, not a production-ready medical or pharmacy system.
-
 ## Authors
 
 - Robert Tworek
