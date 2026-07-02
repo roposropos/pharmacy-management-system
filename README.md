@@ -2,14 +2,40 @@
 
 # Pharmacy Management System
 
-![C#](https://img.shields.io/badge/C%23-.NET-512BD4?style=for-the-badge&logo=csharp&logoColor=white)
-![Avalonia UI](https://img.shields.io/badge/Avalonia_UI-desktop-7B42BC?style=for-the-badge)
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-database-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)
-![ODBC](https://img.shields.io/badge/ODBC-local_connection-555555?style=for-the-badge)
+**Cross-platform desktop application for managing the daily work of a local pharmacy.**
 
-A cross-platform desktop application for managing the daily work of a local pharmacy. The system covers medicine records, customers, prescriptions, compounded medicines, inventory, deliveries, supplier orders, sales documents, reports, audit logs and database backups.
+A university database-systems project combining a **C# / Avalonia UI** desktop client with a relational **PostgreSQL** database accessed through **ODBC**. The system covers medicines, customers, prescriptions, compounded medicines, inventory, deliveries, supplier orders, sales documents, reports, audit logs and database backups.
 
-The project was developed as a **group university project at Wroclaw University of Science and Technology** for a database systems course. It combines a C# desktop client built with **Avalonia UI** and a relational **PostgreSQL** database accessed through ODBC.
+<br />
+
+![C#](https://img.shields.io/badge/C%23-.NET-7C3AED?style=for-the-badge&logo=csharp&logoColor=white)
+![Avalonia UI](https://img.shields.io/badge/Avalonia_UI-Desktop-8B5CF6?style=for-the-badge)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Database-22D3EE?style=for-the-badge&logo=postgresql&logoColor=111827)
+![ODBC](https://img.shields.io/badge/ODBC-Local_connection-111827?style=for-the-badge)
+![MVVM](https://img.shields.io/badge/MVVM-Architecture-A78BFA?style=for-the-badge)
+
+<br />
+
+<a href="#screenshots">Screenshots</a> |
+<a href="#main-features">Features</a> |
+<a href="#architecture">Architecture</a> |
+<a href="#running-locally">Running Locally</a> |
+<a href="#documentation">Documentation</a>
+
+</div>
+
+---
+
+## Project Snapshot
+
+<table>
+  <tr>
+    <td><strong>Context</strong><br />Group university project at Wroclaw University of Science and Technology</td>
+    <td><strong>Client</strong><br />C# desktop application built with Avalonia UI and MVVM</td>
+    <td><strong>Database</strong><br />PostgreSQL schema with migrations, constraints, views, triggers and roles</td>
+    <td><strong>Operations</strong><br />Sales, inventory, reports, audit logs, CSV export and backups</td>
+  </tr>
+</table>
 
 ## Authors
 
@@ -17,50 +43,72 @@ The project was developed as a **group university project at Wroclaw University 
 - Kacper Wajda
 - Michal Gladkojc
 
+---
+
 ## Screenshots
 
-### Login and database connection
+<table>
+  <tr>
+    <td width="50%">
+      <h3>Login and database connection</h3>
+      <p>The login screen allows the user to authenticate and configure or test the local PostgreSQL/ODBC connection.</p>
+      <img src="docs/screenshots/login.png" alt="Login screen" />
+    </td>
+    <td width="50%">
+      <h3>Role-based dashboard</h3>
+      <p>The main dashboard exposes pharmacy modules through a simple desktop navigation view.</p>
+      <img src="docs/screenshots/dashboard.png" alt="Role-based dashboard" />
+    </td>
+  </tr>
+  <tr>
+    <td width="50%">
+      <h3>Customer records</h3>
+      <p>The customer module supports browsing, filtering and maintaining customer data, including contact details and PESEL handling.</p>
+      <img src="docs/screenshots/clients.png" alt="Customer module" />
+    </td>
+    <td width="50%">
+      <h3>Sales workflow</h3>
+      <p>The sales module handles medicine selection, stock batches, cart items and sales documents such as receipts and invoices.</p>
+      <img src="docs/screenshots/sale.png" alt="Sales module" />
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2">
+      <h3>Reports and administration</h3>
+      <p>The reporting area contains sales, inventory, alerts, audit logs, CSV export and backup/restore actions.</p>
+      <img src="docs/screenshots/reports.png" alt="Reports module" />
+    </td>
+  </tr>
+</table>
 
-The login screen allows the user to authenticate and configure or test the local PostgreSQL/ODBC connection.
-
-![Login screen](docs/screenshots/login.png)
-
-### Role-based dashboard
-
-The main dashboard exposes pharmacy modules through a simple desktop navigation view.
-
-![Role-based dashboard](docs/screenshots/dashboard.png)
-
-### Customer records
-
-The customer module supports browsing, filtering and maintaining customer data, including contact details and PESEL handling.
-
-![Customer module](docs/screenshots/clients.png)
-
-### Sales workflow
-
-The sales module handles medicine selection, stock batches, cart items and sales documents such as receipts and invoices.
-
-![Sales module](docs/screenshots/sale.png)
-
-### Reports and administration
-
-The reporting area contains sales, inventory, alerts, audit logs, CSV export and backup/restore actions.
-
-![Reports module](docs/screenshots/reports.png)
+---
 
 ## What The Project Shows
 
-This repository is meant to demonstrate practical work with a real business-style desktop application, not only isolated CRUD screens. The application includes:
+This repository demonstrates practical work with a business-style desktop application, not only isolated CRUD screens.
 
-- a desktop UI built with Avalonia and the MVVM pattern;
-- PostgreSQL schema design with migrations, constraints, views, triggers and roles;
-- repository-based data access through ODBC;
-- role-based access for a pharmacy manager and a pharmacist;
-- input validation and user-readable error handling;
-- protection of sensitive customer data;
-- operational features such as audit logs, backups, CSV exports and test scripts;
-- packaging scripts for Windows x64 and macOS Apple Silicon.
+<table>
+  <tr>
+    <td width="64"><strong>01</strong></td>
+    <td><strong>Desktop UI</strong><br />Avalonia interface structured with the MVVM pattern.</td>
+  </tr>
+  <tr>
+    <td><strong>02</strong></td>
+    <td><strong>Relational database design</strong><br />PostgreSQL migrations, constraints, views, triggers and role separation.</td>
+  </tr>
+  <tr>
+    <td><strong>03</strong></td>
+    <td><strong>Repository-based data access</strong><br />ODBC repositories separate SQL operations from UI state and user actions.</td>
+  </tr>
+  <tr>
+    <td><strong>04</strong></td>
+    <td><strong>Operational workflows</strong><br />Audit logs, backups, CSV exports, smoke tests and packaging scripts.</td>
+  </tr>
+</table>
+
+The application includes role-based access for a pharmacy manager and a pharmacist, input validation, user-readable error handling, protection of sensitive customer data, and package scripts for Windows x64 and macOS Apple Silicon.
+
+---
 
 ## Main Features
 
@@ -79,16 +127,30 @@ This repository is meant to demonstrate practical work with a real business-styl
 | Administration | User accounts, active status, roles, password changes and database-level permissions |
 | Backup | Manual database backup and controlled restore from the reports module |
 
+---
+
 ## Technologies
 
-- C# / .NET `net10.0`
-- Avalonia UI
-- CommunityToolkit.Mvvm
-- Material.Icons.Avalonia
-- PostgreSQL
-- ODBC / `System.Data.Odbc`
-- SQL migrations, seed data and smoke tests
-- Bash and PowerShell setup/package scripts
+<table>
+  <tr>
+    <td><strong>Application</strong></td>
+    <td>C# / .NET <code>net10.0</code>, Avalonia UI, CommunityToolkit.Mvvm, Material.Icons.Avalonia</td>
+  </tr>
+  <tr>
+    <td><strong>Database</strong></td>
+    <td>PostgreSQL, SQL migrations, seed data, constraints, views, triggers and smoke tests</td>
+  </tr>
+  <tr>
+    <td><strong>Connectivity</strong></td>
+    <td>ODBC / <code>System.Data.Odbc</code></td>
+  </tr>
+  <tr>
+    <td><strong>Tooling</strong></td>
+    <td>Bash and PowerShell setup, run, publish and package scripts</td>
+  </tr>
+</table>
+
+---
 
 ## Architecture
 
@@ -101,6 +163,8 @@ flowchart TD
 ```
 
 The application keeps the UI, view state and database access separated. Views define the desktop interface, ViewModels handle user actions and state, repositories execute SQL operations, and PostgreSQL stores the business data with constraints, triggers, roles and reporting views.
+
+---
 
 ## Database Design
 
@@ -123,19 +187,25 @@ The database layer includes:
 - migrations from the initial schema to the final extended version;
 - demo seed data and a smoke regression test.
 
+---
+
 ## Security And Data Protection
 
 The application includes several mechanisms that are important for a pharmacy-like domain:
 
-- user passwords are stored as hashes;
-- customer PESEL values are encrypted before saving;
-- a separate PESEL hash is used for uniqueness checks;
-- sensitive values can be masked in the UI depending on role and context;
-- manager and pharmacist roles are separated both in the application and in PostgreSQL;
-- key operations are written to audit logs;
-- database restore requires explicit confirmation.
+| Mechanism | Purpose |
+| --- | --- |
+| Password hashing | User passwords are stored as hashes instead of plain text |
+| PESEL encryption | Customer PESEL values are encrypted before saving |
+| PESEL hash | A separate hash is used for uniqueness checks |
+| Sensitive value masking | Selected values can be masked in the UI depending on role and context |
+| Role separation | Manager and pharmacist workflows are separated in the app and PostgreSQL |
+| Audit logs | Key operations are written to database logs |
+| Restore confirmation | Database restore requires explicit user confirmation |
 
 For a real deployment, the demo passwords and demo sensitive-data key must be replaced before storing real data.
+
+---
 
 ## Project Structure
 
@@ -159,6 +229,8 @@ pharmacy-management-system/
 |-- Apteka.csproj
 `-- Apteka.sln
 ```
+
+---
 
 ## Running Locally
 
@@ -223,21 +295,16 @@ The default `appsettings.json` uses:
 
 In `auto` mode the application tries to use the Homebrew macOS ODBC driver when available, otherwise it falls back to the `PostgreSQL Unicode` driver name commonly used on Windows.
 
+---
+
 ## Packaging
 
 The project contains scripts for creating self-contained desktop builds:
 
-macOS Apple Silicon:
-
-```bash
-./scripts/package-macos-app.sh
-```
-
-Windows x64:
-
-```bash
-./scripts/package-windows-zip.sh
-```
+| Platform | Command |
+| --- | --- |
+| macOS Apple Silicon | `./scripts/package-macos-app.sh` |
+| Windows x64 | `./scripts/package-windows-zip.sh` |
 
 The final submitted version produced:
 
@@ -248,6 +315,8 @@ The final submitted version produced:
 - demo database seed and SQL smoke test.
 
 Large generated packages are better published as GitHub Releases instead of being committed directly into the repository history.
+
+---
 
 ## Tests And Final Checks
 
@@ -263,6 +332,8 @@ The final project package was checked with:
 
 The detailed Polish test report is available in [test-results/ui-and-package-test-report-pl.txt](test-results/ui-and-package-test-report-pl.txt).
 
+---
+
 ## Documentation
 
 Detailed documentation is available in Polish:
@@ -270,6 +341,8 @@ Detailed documentation is available in Polish:
 - [Functional description and run guide](docs/reference/functional-description-pl.pdf)
 - [Final functionality and test report](docs/reference/final-report-pl.pdf)
 - [Original database project report](docs/reference/original-database-project-report-pl.pdf)
+
+---
 
 ## Current Limitations
 
