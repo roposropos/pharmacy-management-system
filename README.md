@@ -330,8 +330,6 @@ The final project package was checked with:
 - Windows and macOS package generation;
 - final ZIP content verification.
 
-The detailed Polish test report is available in [test-results/ui-and-package-test-report-pl.txt](test-results/ui-and-package-test-report-pl.txt).
-
 ---
 
 ## Documentation
