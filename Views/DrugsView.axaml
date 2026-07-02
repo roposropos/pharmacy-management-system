@@ -1,0 +1,284 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="1100" d:DesignHeight="720"
+             xmlns:vm="using:Apteka.ViewModels"
+             xmlns:c="using:Apteka.Views.Components"
+             xmlns:apteka="clr-namespace:Apteka"
+             xmlns:grid="clr-namespace:Apteka.ViewModels.Grid"
+             xmlns:m="clr-namespace:Apteka.Models"
+             x:Class="Apteka.Views.DrugsView"
+             x:DataType="vm:DrugsViewModel">
+    <UserControl.Resources>
+        <apteka:RowConverter x:Key="RowConverter" />
+    </UserControl.Resources>
+
+    <Grid RowDefinitions="Auto, Auto, *, Auto">
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="10" Spacing="10">
+            <c:IconButton Text="Wstecz" Icon="ArrowLeft" Command="{Binding GoBackCommand}" />
+            <TextBlock Text="Produkty i magazyn" FontSize="24" FontWeight="Bold" VerticalAlignment="Center" />
+        </StackPanel>
+
+        <c:SearchWidget Grid.Row="1" />
+
+        <TabControl Grid.Row="2" Margin="10">
+            <TabItem Header="Katalog leków">
+                <Grid RowDefinitions="*, Auto, Auto" RowSpacing="10">
+                    <DataGrid Grid.Row="0"
+                              ItemsSource="{Binding Items}"
+                              AutoGenerateColumns="False"
+                              IsReadOnly="{Binding !IsEditing}"
+                              CanUserResizeColumns="True"
+                              GridLinesVisibility="All"
+                              BorderThickness="1" BorderBrush="Gray"
+                              SelectedItem="{Binding SelectedItem}">
+                        <DataGrid.Styles>
+                            <Style Selector="DataGridRow" x:DataType="grid:LekiViewModel">
+                                <Setter Property="Background"
+                                        Value="{Binding IsModified, Converter={StaticResource RowConverter}}" />
+                            </Style>
+                            <Style Selector="DataGridColumnHeader">
+                                <Setter Property="HorizontalContentAlignment" Value="Center" />
+                            </Style>
+                        </DataGrid.Styles>
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="60" />
+                            <DataGridTextColumn Header="Nazwa" Binding="{Binding Nazwa}" Width="*" />
+                            <DataGridTextColumn Header="Producent" Binding="{Binding Producent}" Width="*" />
+                            <DataGridTextColumn Header="Substancja czynna" Binding="{Binding SubstancjaCzynna}" Width="*" />
+                            <DataGridCheckBoxColumn Header="Bez recepty" Binding="{Binding BezRecepty}" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+
+                    <Grid Grid.Row="1" ColumnDefinitions="*, *" IsEnabled="{Binding IsEditing}">
+                        <StackPanel Spacing="6" Margin="0,0,12,0">
+                            <Grid ColumnDefinitions="150,*">
+                                <TextBlock Text="ID:" VerticalAlignment="Center" />
+                                <TextBox Grid.Column="1" IsEnabled="False" Text="{Binding SelectedItem.Id}" />
+                            </Grid>
+                            <Grid ColumnDefinitions="150,*">
+                                <TextBlock Text="Nazwa:" VerticalAlignment="Center" />
+                                <TextBox Grid.Column="1" Text="{Binding SelectedItem.Nazwa}" />
+                            </Grid>
+                            <Grid ColumnDefinitions="150,*">
+                                <TextBlock Text="Substancja czynna:" VerticalAlignment="Center" />
+                                <TextBox Grid.Column="1" Text="{Binding SelectedItem.SubstancjaCzynna}" />
+                            </Grid>
+                            <Grid ColumnDefinitions="150,*">
+                                <TextBlock Text="Bez recepty:" VerticalAlignment="Center" />
+                                <CheckBox Grid.Column="1" IsChecked="{Binding SelectedItem.BezRecepty}" />
+                            </Grid>
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="1" Spacing="6">
+                            <Grid ColumnDefinitions="150,*">
+                                <TextBlock Text="Producent:" VerticalAlignment="Center" />
+                                <ComboBox Grid.Column="1"
+                                          ItemsSource="{Binding Producers}"
+                                          SelectedItem="{Binding SelectedProducer}">
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate x:DataType="m:Producent">
+                                            <TextBlock Text="{Binding Nazwa}" />
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
+                                </ComboBox>
+                            </Grid>
+                            <Grid ColumnDefinitions="150,*">
+                                <TextBlock Text="Adres producenta:" VerticalAlignment="Center" />
+                                <TextBox Grid.Column="1" IsReadOnly="True" Text="{Binding SelectedItem.AdresProducenta}" />
+                            </Grid>
+                        </StackPanel>
+                    </Grid>
+
+                    <ScrollViewer Grid.Row="2"
+                                  HorizontalScrollBarVisibility="Auto"
+                                  VerticalScrollBarVisibility="Disabled">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10">
+                            <TextBlock Text="{Binding StatusMessage}" VerticalAlignment="Center" TextWrapping="Wrap" MaxWidth="360" />
+                            <c:CrudActions />
+                            <Button Content="Zapisz" Command="{Binding SaveCommand}" IsEnabled="{Binding CanManageCatalog}" />
+                            <Button Content="Anuluj" Command="{Binding CancelCommand}" />
+                        </StackPanel>
+                    </ScrollViewer>
+                </Grid>
+            </TabItem>
+
+            <TabItem Header="Warianty i partie">
+                <Grid RowDefinitions="*, Auto, *, Auto" ColumnDefinitions="*, 360" RowSpacing="10" ColumnSpacing="14">
+                    <DataGrid Grid.Row="0"
+                              Grid.Column="0"
+                              ItemsSource="{Binding SelectedItem.Lek.Warianty}"
+                              SelectedItem="{Binding SelectedVariant}"
+                              AutoGenerateColumns="False"
+                              IsReadOnly="True">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="60" />
+                            <DataGridTextColumn Header="EAN" Binding="{Binding KodEan}" Width="*" />
+                            <DataGridTextColumn Header="Dawka" Binding="{Binding Dawka}" Width="*" />
+                            <DataGridTextColumn Header="Ilość" Binding="{Binding Ilosc}" Width="90" />
+                            <DataGridTextColumn Header="Dostępne" Binding="{Binding DostepnaIlosc}" Width="110" />
+                            <DataGridTextColumn Header="Postać" Binding="{Binding Postac}" Width="*" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+
+                    <ScrollViewer Grid.Row="0" Grid.Column="1" VerticalScrollBarVisibility="Auto">
+                        <StackPanel Spacing="8" IsEnabled="{Binding CanManageCatalog}">
+                            <TextBlock Text="Wariant leku" FontSize="16" FontWeight="SemiBold" />
+                            <Grid ColumnDefinitions="120,*">
+                                <TextBlock Text="EAN:" VerticalAlignment="Center" />
+                                <TextBox Grid.Column="1" Text="{Binding VariantKodEan}" />
+                            </Grid>
+                            <Grid ColumnDefinitions="120,*">
+                                <TextBlock Text="Dawka:" VerticalAlignment="Center" />
+                                <TextBox Grid.Column="1" Text="{Binding VariantDawka}" />
+                            </Grid>
+                            <Grid ColumnDefinitions="120,*">
+                                <TextBlock Text="Ilość:" VerticalAlignment="Center" />
+                                <TextBox Grid.Column="1" Text="{Binding VariantIlosc}" />
+                            </Grid>
+                            <Grid ColumnDefinitions="120,*">
+                                <TextBlock Text="Postać:" VerticalAlignment="Center" />
+                                <ComboBox Grid.Column="1"
+                                          ItemsSource="{Binding AvailableForms}"
+                                          SelectedItem="{Binding VariantPostac}" />
+                            </Grid>
+                            <ScrollViewer HorizontalScrollBarVisibility="Auto"
+                                          VerticalScrollBarVisibility="Disabled">
+                                <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Right">
+                                    <Button Content="Nowy" Command="{Binding NewVariantCommand}" />
+                                    <Button Content="Zapisz" Command="{Binding SaveVariantCommand}" />
+                                    <Button Content="Usuń" Command="{Binding DeleteVariantCommand}" />
+                                </StackPanel>
+                            </ScrollViewer>
+                            <TextBlock Text="{Binding VariantMessage}" TextWrapping="Wrap" />
+                        </StackPanel>
+                    </ScrollViewer>
+
+                    <TextBlock Grid.Row="1" Grid.ColumnSpan="2"
+                               Text="Partie magazynowe i korekty"
+                               FontSize="16"
+                               FontWeight="SemiBold" />
+
+                    <DataGrid Grid.Row="2"
+                              Grid.Column="0"
+                              ItemsSource="{Binding Batches}"
+                              SelectedItem="{Binding SelectedBatch}"
+                              AutoGenerateColumns="False"
+                              IsReadOnly="True">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Lek" Binding="{Binding Nazwa}" Width="*" />
+                            <DataGridTextColumn Header="Producent" Binding="{Binding Producent}" Width="*" />
+                            <DataGridTextColumn Header="EAN" Binding="{Binding KodEan}" Width="*" />
+                            <DataGridTextColumn Header="Partia" Binding="{Binding NumerPartii}" Width="*" />
+                            <DataGridTextColumn Header="Ważna do" Binding="{Binding DataWaznosci, StringFormat={}{0:yyyy-MM-dd}}" Width="110" />
+                            <DataGridTextColumn Header="Dostępne" Binding="{Binding IloscDostepna}" Width="90" />
+                            <DataGridTextColumn Header="Rezerw." Binding="{Binding IloscZarezerwowana}" Width="90" />
+                            <DataGridTextColumn Header="Do sprzedaży" Binding="{Binding IloscDoSprzedazy}" Width="110" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+
+                    <ScrollViewer Grid.Row="2" Grid.Column="1" VerticalScrollBarVisibility="Auto">
+                        <StackPanel Spacing="8" IsEnabled="{Binding CanManageCatalog}">
+                            <TextBlock Text="Korekta stanu" FontSize="16" FontWeight="SemiBold" />
+                            <TextBlock Text="{Binding SelectedBatch.Nazwa}" TextWrapping="Wrap" />
+                            <Grid ColumnDefinitions="120,*">
+                                <TextBlock Text="Zmiana:" VerticalAlignment="Center" />
+                                <TextBox Grid.Column="1" Text="{Binding StockAdjustmentQuantity}" />
+                            </Grid>
+                            <Grid ColumnDefinitions="120,*">
+                                <TextBlock Text="Powód:" VerticalAlignment="Center" />
+                                <TextBox Grid.Column="1" Text="{Binding StockAdjustmentReason}" />
+                            </Grid>
+                            <Button Content="Zapisz korektę"
+                                    HorizontalAlignment="Right"
+                                    Command="{Binding ApplyStockAdjustmentCommand}" />
+                            <TextBlock Text="{Binding InventoryMessage}" TextWrapping="Wrap" />
+                        </StackPanel>
+                    </ScrollViewer>
+                </Grid>
+            </TabItem>
+
+            <TabItem Header="Dostawcy">
+                <Grid RowDefinitions="*, Auto, Auto" ColumnDefinitions="*, 390" RowSpacing="10" ColumnSpacing="14">
+                    <DataGrid Grid.Row="0"
+                              Grid.Column="0"
+                              ItemsSource="{Binding Suppliers}"
+                              SelectedItem="{Binding SelectedSupplier}"
+                              AutoGenerateColumns="False"
+                              IsReadOnly="True">
+                        <DataGrid.Styles>
+                            <Style Selector="DataGridRow" x:DataType="grid:DostawcaViewModel">
+                                <Setter Property="Background"
+                                        Value="{Binding IsModified, Converter={StaticResource RowConverter}}" />
+                            </Style>
+                        </DataGrid.Styles>
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="60" />
+                            <DataGridTextColumn Header="Nazwa" Binding="{Binding Nazwa}" Width="*" />
+                            <DataGridTextColumn Header="NIP" Binding="{Binding NIP}" Width="*" />
+                            <DataGridTextColumn Header="Adres" Binding="{Binding PelnyAdres}" Width="2*" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+
+                    <ScrollViewer Grid.Row="0" Grid.Column="1" VerticalScrollBarVisibility="Auto">
+                        <StackPanel Spacing="7" IsEnabled="{Binding IsSupplierEditing}">
+                            <TextBlock Text="Dane dostawcy" FontSize="16" FontWeight="SemiBold" />
+                            <Grid ColumnDefinitions="130,*">
+                                <TextBlock Text="Nazwa:" VerticalAlignment="Center" />
+                                <TextBox Grid.Column="1" Text="{Binding SelectedSupplier.Nazwa}" />
+                            </Grid>
+                            <Grid ColumnDefinitions="130,*">
+                                <TextBlock Text="NIP:" VerticalAlignment="Center" />
+                                <TextBox Grid.Column="1" Text="{Binding SelectedSupplier.NIP}" />
+                            </Grid>
+                            <Grid ColumnDefinitions="130,*">
+                                <TextBlock Text="Kraj:" VerticalAlignment="Center" />
+                                <TextBox Grid.Column="1" Text="{Binding SelectedSupplier.Kraj}" />
+                            </Grid>
+                            <Grid ColumnDefinitions="130,*">
+                                <TextBlock Text="Miasto:" VerticalAlignment="Center" />
+                                <TextBox Grid.Column="1" Text="{Binding SelectedSupplier.Miejscowosc}" />
+                            </Grid>
+                            <Grid ColumnDefinitions="130,*">
+                                <TextBlock Text="Kod pocztowy:" VerticalAlignment="Center" />
+                                <TextBox Grid.Column="1" Text="{Binding SelectedSupplier.KodPocztowy}" />
+                            </Grid>
+                            <Grid ColumnDefinitions="130,*">
+                                <TextBlock Text="Ulica:" VerticalAlignment="Center" />
+                                <TextBox Grid.Column="1" Text="{Binding SelectedSupplier.Ulica}" />
+                            </Grid>
+                            <Grid ColumnDefinitions="130,*">
+                                <TextBlock Text="Nr domu:" VerticalAlignment="Center" />
+                                <TextBox Grid.Column="1" Text="{Binding SelectedSupplier.NumerDomu}" />
+                            </Grid>
+                            <Grid ColumnDefinitions="130,*">
+                                <TextBlock Text="Nr lokalu:" VerticalAlignment="Center" />
+                                <TextBox Grid.Column="1" Text="{Binding SelectedSupplier.NumerLokalu}" />
+                            </Grid>
+                        </StackPanel>
+                    </ScrollViewer>
+
+                    <ScrollViewer Grid.Row="1"
+                                  Grid.ColumnSpan="2"
+                                  HorizontalScrollBarVisibility="Auto"
+                                  VerticalScrollBarVisibility="Disabled">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
+                            <TextBlock Text="{Binding SupplierMessage}" VerticalAlignment="Center" TextWrapping="Wrap" MaxWidth="360" />
+                            <Button Content="Dodaj" Command="{Binding AddSupplierCommand}" IsEnabled="{Binding CanManageCatalog}" />
+                            <Button Content="Edytuj" Command="{Binding EditSupplierCommand}" IsEnabled="{Binding CanManageCatalog}" />
+                            <Button Content="Usuń" Command="{Binding DeleteSupplierCommand}" IsEnabled="{Binding CanManageCatalog}" />
+                            <Button Content="Zapisz" Command="{Binding SaveSupplierCommand}" IsEnabled="{Binding CanManageCatalog}" />
+                            <Button Content="Anuluj" Command="{Binding CancelSupplierCommand}" />
+                        </StackPanel>
+                    </ScrollViewer>
+                </Grid>
+            </TabItem>
+        </TabControl>
+
+        <TextBlock Grid.Row="3"
+                   Margin="10,0,10,10"
+                   Text="Tryb tylko do odczytu"
+                   IsVisible="{Binding !CanManageCatalog}" />
+    </Grid>
+</UserControl>

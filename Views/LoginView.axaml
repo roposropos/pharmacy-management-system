@@ -1,0 +1,78 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:Apteka.ViewModels"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="560" d:DesignHeight="620"
+             x:Class="Apteka.Views.LoginView"
+             x:DataType="vm:LoginViewModel">
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Width="460" Spacing="14" Margin="24">
+            <TextBlock Text="Logowanie" FontSize="24" HorizontalAlignment="Left" FontWeight="Bold" />
+
+            <Grid ColumnDefinitions="170, *">
+                <TextBlock Text="Nazwa użytkownika:" VerticalAlignment="Center" />
+                <TextBox Grid.Column="1" Text="{Binding Username}" Watermark="login" />
+            </Grid>
+            <Grid ColumnDefinitions="170, *">
+                <TextBlock Text="Hasło:" VerticalAlignment="Center" />
+                <TextBox Grid.Column="1" Text="{Binding Password}" Watermark="hasło" PasswordChar="*" />
+            </Grid>
+
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
+                <Button Command="{Binding CheckConnectionCommand}"
+                        Content="Test połączenia"
+                        ToolTip.Tip="Opcjonalnie sprawdza PostgreSQL i ODBC. Logowanie wykonuje ten test automatycznie." />
+                <Button Command="{Binding LoginCommand}"
+                        Content="Zaloguj"
+                        HorizontalContentAlignment="Center" />
+            </StackPanel>
+
+            <TextBlock Text="{Binding ErrorMessage}"
+                       Foreground="Red"
+                       HorizontalAlignment="Center"
+                       TextWrapping="Wrap"
+                       IsVisible="{Binding ErrorMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+
+            <TextBlock Text="{Binding ConnectionStatus}"
+                       TextWrapping="Wrap"
+                       Foreground="#355c7d" />
+
+            <Button Command="{Binding ToggleConnectionSettingsCommand}"
+                    Content="Konfiguracja połączenia"
+                    HorizontalAlignment="Left" />
+
+            <StackPanel IsVisible="{Binding IsConnectionSettingsVisible}" Spacing="8">
+                <Grid ColumnDefinitions="170, *">
+                    <TextBlock Text="Sterownik ODBC:" VerticalAlignment="Center" />
+                    <TextBox Grid.Column="1" Text="{Binding DatabaseDriver}" Watermark="auto" />
+                </Grid>
+                <Grid ColumnDefinitions="170, *">
+                    <TextBlock Text="Host:" VerticalAlignment="Center" />
+                    <TextBox Grid.Column="1" Text="{Binding DatabaseHost}" />
+                </Grid>
+                <Grid ColumnDefinitions="170, *">
+                    <TextBlock Text="Port:" VerticalAlignment="Center" />
+                    <TextBox Grid.Column="1" Text="{Binding DatabasePort}" />
+                </Grid>
+                <Grid ColumnDefinitions="170, *">
+                    <TextBlock Text="Baza:" VerticalAlignment="Center" />
+                    <TextBox Grid.Column="1" Text="{Binding DatabaseName}" />
+                </Grid>
+                <Grid ColumnDefinitions="170, *">
+                    <TextBlock Text="Użytkownik logowania:" VerticalAlignment="Center" />
+                    <TextBox Grid.Column="1" Text="{Binding LoginDatabaseUser}" />
+                </Grid>
+                <Grid ColumnDefinitions="170, *">
+                    <TextBlock Text="Hasło DB:" VerticalAlignment="Center" />
+                    <TextBox Grid.Column="1" Text="{Binding LoginDatabasePassword}" PasswordChar="*" />
+                </Grid>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
+                    <Button Command="{Binding SaveConnectionSettingsCommand}" Content="Zapisz lokalnie" />
+                    <Button Command="{Binding CheckConnectionCommand}" Content="Test" />
+                </StackPanel>
+            </StackPanel>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

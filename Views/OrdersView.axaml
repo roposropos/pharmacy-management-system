@@ -1,0 +1,144 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:Apteka.ViewModels"
+             xmlns:c="using:Apteka.Views.Components"
+             xmlns:grid="clr-namespace:Apteka.ViewModels.Grid"
+             x:Class="Apteka.Views.OrdersView"
+             x:DataType="vm:OrdersViewModel">
+    <Grid RowDefinitions="Auto, *, *, Auto">
+        <StackPanel Orientation="Horizontal" Margin="10" Spacing="10">
+            <c:IconButton Text="Wstecz" Icon="ArrowLeft" Command="{Binding GoBackCommand}" />
+            <TextBlock Text="Zamówienia" FontSize="24" FontWeight="Bold" VerticalAlignment="Center" />
+        </StackPanel>
+
+        <Grid Grid.Row="1" ColumnDefinitions="*, *" Margin="10" ColumnSpacing="10">
+            <DataGrid ItemsSource="{Binding Orders}"
+                      SelectedItem="{Binding SelectedOrder}"
+                      AutoGenerateColumns="False"
+                      IsReadOnly="True">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="ID" Binding="{Binding Id}" />
+                    <DataGridTextColumn Header="Data" Binding="{Binding DataUtworzenia, StringFormat={}{0:yyyy-MM-dd HH:mm}}" Width="150" />
+                    <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="120" />
+                    <DataGridTextColumn Header="Typ" Binding="{Binding Typ}" Width="100" />
+                    <DataGridTextColumn Header="Dostawca" Binding="{Binding Dostawca.Nazwa}" Width="*" />
+                </DataGrid.Columns>
+            </DataGrid>
+
+            <DataGrid Grid.Column="1"
+                      ItemsSource="{Binding OrderLines}"
+                      SelectedItem="{Binding SelectedOrderLine}"
+                      AutoGenerateColumns="False"
+                      IsReadOnly="True">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Typ" Binding="{Binding TypProduktu}" Width="90" />
+                    <DataGridTextColumn Header="Produkt" Binding="{Binding Nazwa}" Width="*" />
+                    <DataGridTextColumn Header="Ilość" Binding="{Binding Ilosc}" Width="90" />
+                    <DataGridTextColumn Header="Cena szac." Binding="{Binding CenaSzacowana}" Width="120" />
+                </DataGrid.Columns>
+            </DataGrid>
+        </Grid>
+
+        <Grid Grid.Row="2" ColumnDefinitions="*, *" Margin="10">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <StackPanel Spacing="10" Margin="0,0,10,0">
+                    <TextBlock Text="Nowe Zamówienie" FontSize="18" FontWeight="Bold" />
+                    <ComboBox ItemsSource="{Binding AvailableSuppliers}" SelectedItem="{Binding SelectedSupplier}"
+                              HorizontalAlignment="Stretch" PlaceholderText="Wybierz dostawcę">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Nazwa}" />
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                    <ComboBox ItemsSource="{Binding OrderItemTypes}"
+                              SelectedItem="{Binding OrderItemType}"
+                              HorizontalAlignment="Stretch" />
+                    <ComboBox ItemsSource="{Binding AvailableDrugs}" SelectedItem="{Binding SelectedDrug}"
+                              HorizontalAlignment="Stretch">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Nazwa}" />
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                    <ComboBox ItemsSource="{Binding SelectedDrug.Lek.Warianty}" SelectedItem="{Binding SelectedVariant}"
+                              HorizontalAlignment="Stretch">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Dawka}" />
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                    <ComboBox ItemsSource="{Binding AvailableRawMaterials}"
+                              SelectedItem="{Binding SelectedRawMaterial}"
+                              HorizontalAlignment="Stretch"
+                              PlaceholderText="Wybierz surowiec">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Nazwa}" />
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                    <NumericUpDown Value="{Binding Quantity}" Minimum="1" />
+                    <NumericUpDown Value="{Binding EstimatedPrice}" Minimum="0" FormatString="0.00" />
+                    <Button Content="Dodaj Pozycję" Command="{Binding AddItemCommand}" HorizontalAlignment="Stretch" />
+                    <Grid ColumnDefinitions="*, *" ColumnSpacing="8">
+                        <StackPanel Spacing="4">
+                            <TextBlock Text="Minimum" />
+                            <NumericUpDown Value="{Binding MinimumStockLevel}" Minimum="0" FormatString="0.###" />
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" Spacing="4">
+                            <TextBlock Text="Cel" />
+                            <NumericUpDown Value="{Binding TargetStockLevel}" Minimum="1" FormatString="0.###" />
+                        </StackPanel>
+                    </Grid>
+                    <Button Content="Dodaj braki" Command="{Binding AddReorderSuggestionsCommand}" HorizontalAlignment="Stretch" />
+                    <Button Content="Usuń Pozycję" Command="{Binding RemoveItemCommand}" HorizontalAlignment="Stretch" />
+                    <Button Content="Złóż Zamówienie" Command="{Binding PlaceOrderCommand}" HorizontalAlignment="Stretch"
+                            Classes="accent" />
+                </StackPanel>
+            </ScrollViewer>
+            <DataGrid Grid.Column="1"
+                      ItemsSource="{Binding NewOrderItems}"
+                      SelectedItem="{Binding SelectedNewOrderItem}"
+                      AutoGenerateColumns="False"
+                      IsReadOnly="True"
+                      Margin="10,0,0,0">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Typ" Binding="{Binding TypProduktu}" Width="90" />
+                    <DataGridTextColumn Header="Produkt" Binding="{Binding Nazwa}" Width="*" />
+                    <DataGridTextColumn Header="Ilość" Binding="{Binding Ilosc}" Width="90" />
+                    <DataGridTextColumn Header="Cena szac." Binding="{Binding CenaSzacowana}" Width="120" />
+                </DataGrid.Columns>
+            </DataGrid>
+        </Grid>
+
+        <ScrollViewer Grid.Row="3"
+                      Margin="10"
+                      HorizontalScrollBarVisibility="Auto"
+                      VerticalScrollBarVisibility="Disabled">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
+                <TextBlock Text="{Binding StatusMessage}" VerticalAlignment="Center" TextWrapping="Wrap" MaxWidth="360" />
+                <Button Content="Zatwierdź"
+                        Command="{Binding ApproveOrderCommand}"
+                        IsEnabled="{Binding CanManageOrders}" />
+                <Button Content="Zrealizuj"
+                        Command="{Binding MarkOrderRealizedCommand}"
+                        IsEnabled="{Binding CanManageOrders}" />
+                <Button Content="Archiwizuj"
+                        Command="{Binding ArchiveOrderCommand}"
+                        IsEnabled="{Binding CanManageOrders}" />
+                <Button Content="Anuluj"
+                        Command="{Binding CancelOrderCommand}"
+                        IsEnabled="{Binding CanManageOrders}" />
+                <Button Content="Usuń pozycję"
+                        Command="{Binding DeleteOrderLineCommand}"
+                        IsEnabled="{Binding CanManageOrders}" />
+                <Button Content="Usuń zamówienie"
+                        Command="{Binding DeleteOrderCommand}"
+                        IsEnabled="{Binding CanManageOrders}" />
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

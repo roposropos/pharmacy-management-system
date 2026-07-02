@@ -1,0 +1,128 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:Apteka.ViewModels"
+             xmlns:c="using:Apteka.Views.Components"
+             xmlns:grid="clr-namespace:Apteka.ViewModels.Grid"
+             x:Class="Apteka.Views.DeliveriesView"
+             x:DataType="vm:DeliveriesViewModel">
+    <Grid RowDefinitions="Auto, *, *, Auto">
+        <StackPanel Orientation="Horizontal" Margin="10" Spacing="10">
+            <c:IconButton Text="Wstecz" Icon="ArrowLeft" Command="{Binding GoBackCommand}" />
+            <TextBlock Text="Dostawy" FontSize="24" FontWeight="Bold" VerticalAlignment="Center" />
+        </StackPanel>
+
+        <Grid Grid.Row="1" ColumnDefinitions="*, *" Margin="10" ColumnSpacing="10">
+            <DataGrid ItemsSource="{Binding Deliveries}"
+                      SelectedItem="{Binding SelectedDelivery}"
+                      AutoGenerateColumns="False"
+                      IsReadOnly="True">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="70" />
+                    <DataGridTextColumn Header="Data" Binding="{Binding DataDostawy, StringFormat={}{0:yyyy-MM-dd HH:mm}}" Width="150" />
+                    <DataGridTextColumn Header="Dostawca" Binding="{Binding Dostawca.Nazwa}" Width="*" />
+                </DataGrid.Columns>
+            </DataGrid>
+
+            <DataGrid Grid.Column="1"
+                      ItemsSource="{Binding DeliveryLines}"
+                      AutoGenerateColumns="False"
+                      IsReadOnly="True">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Typ" Binding="{Binding TypProduktu}" Width="90" />
+                    <DataGridTextColumn Header="Produkt" Binding="{Binding Nazwa}" Width="*" />
+                    <DataGridTextColumn Header="Partia" Binding="{Binding NumerPartii}" Width="120" />
+                    <DataGridTextColumn Header="Ilość" Binding="{Binding Ilosc}" Width="90" />
+                    <DataGridTextColumn Header="Cena" Binding="{Binding CenaZakupu}" Width="90" />
+                </DataGrid.Columns>
+            </DataGrid>
+        </Grid>
+
+        <Grid Grid.Row="2" ColumnDefinitions="*, *" Margin="10">
+            <ScrollViewer>
+                <StackPanel Spacing="10" Margin="0,0,10,0">
+                    <TextBlock Text="Nowa Dostawa" FontSize="18" FontWeight="Bold" />
+                    <ComboBox ItemsSource="{Binding PendingOrders}" SelectedItem="{Binding SelectedOrder}"
+                              HorizontalAlignment="Stretch" PlaceholderText="Wybierz zamówienie (opcjonalnie)">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Id, StringFormat='Zamówienie #{0}'}" />
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                    <ComboBox ItemsSource="{Binding AvailableSuppliers}" SelectedItem="{Binding SelectedSupplier}"
+                              HorizontalAlignment="Stretch" PlaceholderText="Wybierz dostawcę">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Nazwa}" />
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                    <ComboBox ItemsSource="{Binding DeliveryItemTypes}"
+                              SelectedItem="{Binding DeliveryItemType}"
+                              HorizontalAlignment="Stretch" />
+                    <ComboBox ItemsSource="{Binding AvailableDrugs}" SelectedItem="{Binding SelectedDrug}"
+                              HorizontalAlignment="Stretch" PlaceholderText="Wybierz lek">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Nazwa}" />
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                    <ComboBox ItemsSource="{Binding SelectedDrug.Lek.Warianty}"
+                              SelectedItem="{Binding SelectedVariant}" HorizontalAlignment="Stretch"
+                              PlaceholderText="Wybierz wariant">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Dawka}" />
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                    <ComboBox ItemsSource="{Binding AvailableRawMaterials}"
+                              SelectedItem="{Binding SelectedRawMaterial}"
+                              HorizontalAlignment="Stretch"
+                              PlaceholderText="Wybierz surowiec">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Nazwa}" />
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                    <NumericUpDown Value="{Binding Quantity}" Minimum="1" />
+                    <TextBox Text="{Binding BatchNumber}" Watermark="Numer Partii" />
+                    <DatePicker SelectedDate="{Binding ExpiryDate}" />
+                    <NumericUpDown Value="{Binding PurchasePrice}" Minimum="0" FormatString="0.00" />
+                    <Button Content="Dodaj Pozycję" Command="{Binding AddItemCommand}" HorizontalAlignment="Stretch" />
+                    <Button Content="Usuń Pozycję" Command="{Binding RemoveItemCommand}" HorizontalAlignment="Stretch" />
+                    <Button Content="Zapisz Dostawę" Command="{Binding SubmitDeliveryCommand}"
+                            HorizontalAlignment="Stretch" Classes="accent" />
+                </StackPanel>
+            </ScrollViewer>
+            <DataGrid Grid.Column="1"
+                      ItemsSource="{Binding NewDeliveryItems}"
+                      SelectedItem="{Binding SelectedDeliveryItem}"
+                      AutoGenerateColumns="False"
+                      IsReadOnly="True"
+                      Margin="10,0,0,0">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Typ" Binding="{Binding TypProduktu}" Width="90" />
+                    <DataGridTextColumn Header="Produkt" Binding="{Binding Nazwa}" Width="*" />
+                    <DataGridTextColumn Header="Partia" Binding="{Binding NumerPartii}" Width="140" />
+                    <DataGridTextColumn Header="Ważna do" Binding="{Binding DataWaznosci, StringFormat=\{0:yyyy-MM-dd\}}" Width="120" />
+                    <DataGridTextColumn Header="Ilość" Binding="{Binding Ilosc}" Width="90" />
+                    <DataGridTextColumn Header="Cena zakupu" Binding="{Binding CenaZakupu}" Width="120" />
+                </DataGrid.Columns>
+            </DataGrid>
+        </Grid>
+        <ScrollViewer Grid.Row="3"
+                      Margin="10"
+                      HorizontalScrollBarVisibility="Auto"
+                      VerticalScrollBarVisibility="Disabled">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
+                <TextBlock Text="{Binding StatusMessage}" VerticalAlignment="Center" TextWrapping="Wrap" MaxWidth="360" />
+                <Button Content="Usuń błędną dostawę"
+                        Command="{Binding DeleteDeliveryCommand}"
+                        IsEnabled="{Binding CanManageDeliveries}" />
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

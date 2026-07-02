@@ -1,0 +1,71 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:vm="using:Apteka.ViewModels"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="600"
+             xmlns:c="clr-namespace:Apteka.Views.Components"
+             x:Class="Apteka.Views.DashboardView"
+             x:DataType="vm:DashboardViewModel">
+    <UserControl.Styles>
+        <Style Selector="c|IconButton.DashBtn Button">
+            <Setter Property="Background" Value="#1796b0" />
+            <Setter Property="CornerRadius" Value="0" />
+            <Setter Property="Padding" Value="15" />
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+            <Setter Property="VerticalAlignment" Value="Stretch" />
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="MinHeight" Value="130" />
+            <Setter Property="MinWidth" Value="130" />
+            <Setter Property="Width" Value="45" />
+            <Setter Property="Height" Value="45" />
+            <Setter Property="Margin" Value="10" />
+            <Setter Property="Command" Value="{Binding NavigateCommand}" />
+            <Setter Property="CommandParameter" Value="{Binding $parent[c:IconButton].Text}" />
+        </Style>
+
+        <Style Selector="c|IconButton.DashBtn Button TextBlock">
+            <Setter Property="FontSize" Value="16" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="TextWrapping" Value="Wrap" />
+            <Setter Property="TextAlignment" Value="Center" />
+        </Style>
+
+        <Style Selector="c|IconButton.DashBtn Button materialIcons|MaterialIcon">
+            <Setter Property="Width" Value="45" />
+            <Setter Property="Height" Value="45" />
+        </Style>
+
+        <Style Selector="c|IconButton.DashBtn Button StackPanel">
+            <Setter Property="Orientation" Value="Vertical" />
+        </Style>
+    </UserControl.Styles>
+
+    <UniformGrid Columns="3"
+                 Rows="3"
+                 HorizontalAlignment="Center"
+                 VerticalAlignment="Center"
+                 Margin="20">
+
+        <c:IconButton Classes="DashBtn" Icon="Drugs" Text="Produkty" />
+
+        <c:IconButton Classes="DashBtn" Text="Klienci" Icon="AccountGroup" />
+
+        <c:IconButton Classes="DashBtn" Text="Dostawy" Icon="TruckDelivery" />
+
+        <c:IconButton Classes="DashBtn" Text="Recepty" Icon="ReceiptText" />
+
+        <c:IconButton Classes="DashBtn" Text="Sprzedaż" Icon="HandCoin" />
+
+        <c:IconButton Classes="DashBtn" Text="Zamówienia" Icon="ClipboardListOutline" />
+
+        <c:IconButton Classes="DashBtn" IsVisible="{Binding IsKierownik}" Text="Raporty" Icon="ChartPie" />
+
+        <c:IconButton Classes="DashBtn" IsVisible="{Binding IsKierownik}" Text="Pracownicy" Icon="BriefcaseAccount" />
+
+        <c:IconButton Classes="DashBtn" Text="Wyloguj" Icon="Logout" />
+
+    </UniformGrid>
+</UserControl>

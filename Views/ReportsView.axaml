@@ -1,0 +1,175 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="650"
+             xmlns:vm="using:Apteka.ViewModels"
+             xmlns:c="using:Apteka.Views.Components"
+             xmlns:apteka="clr-namespace:Apteka"
+             x:Class="Apteka.Views.ReportsView"
+             xmlns:m="clr-namespace:Apteka.Models"
+             x:DataType="vm:ReportsViewModel">
+    <UserControl.Resources>
+        <apteka:TypConverter x:Key="TypConverter" />
+    </UserControl.Resources>
+    <Grid RowDefinitions="Auto, Auto, *">
+        <!-- Header -->
+        <ScrollViewer Grid.Row="0"
+                      HorizontalScrollBarVisibility="Auto"
+                      VerticalScrollBarVisibility="Disabled">
+            <StackPanel Orientation="Horizontal" Margin="10" Spacing="10">
+                <c:IconButton Text="Wstecz" Icon="ArrowLeft" Command="{Binding GoBack}" />
+                <TextBlock Text="Raporty i administracja" FontSize="24" FontWeight="Bold" VerticalAlignment="Center" />
+                <Separator Width="20" Background="Transparent" />
+                <Button Content="Odśwież" Command="{Binding LoadDataCommand}" />
+                <Button Content="Eksportuj do CSV" Command="{Binding ExportToCsvCommand}" />
+                <TextBlock Text="{Binding ExportMessage}" VerticalAlignment="Center" />
+            </StackPanel>
+        </ScrollViewer>
+        <ScrollViewer Grid.Row="1"
+                      HorizontalScrollBarVisibility="Auto"
+                      VerticalScrollBarVisibility="Disabled">
+            <StackPanel Margin="10" Spacing="10" Orientation="Horizontal">
+                <TextBlock Text="Od:" VerticalAlignment="Center" FontSize="18" />
+                <DatePicker SelectedDate="{Binding StartDate}" />
+                <TextBlock Text="Do:" VerticalAlignment="Center" FontSize="18" />
+                <DatePicker SelectedDate="{Binding EndDate}" />
+            </StackPanel>
+        </ScrollViewer>
+        <!-- Content -->
+        <TabControl Grid.Row="2" SelectedIndex="{Binding SelectedTabIndex}">
+            <TabItem Header="Sprzedaż">
+                <DataGrid ItemsSource="{Binding Sales}"
+                          AutoGenerateColumns="False"
+                          IsReadOnly="True"
+                          GridLinesVisibility="All"
+                          BorderThickness="1" BorderBrush="Gray"
+                          Margin="10">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="60" />
+                        <DataGridTextColumn Header="Data" Binding="{Binding Data, StringFormat=\{0:yyyy-MM-dd\}}"
+                                            Width="180" />
+                        <DataGridTextColumn Header="Kwota" Binding="{Binding KwotaBrutto, StringFormat=\{0:C\}}"
+                                            Width="120" />
+                        <!-- <DataGridTextColumn Header="Klient" Binding="{Binding Klient}" Width="*" /> -->
+                        <!-- <DataGridTextColumn Header="Pracownik" Binding="{Binding Pracownik}" Width="*" /> -->
+                    </DataGrid.Columns>
+                </DataGrid>
+            </TabItem>
+            <TabItem Header="Magazyn">
+                <DataGrid ItemsSource="{Binding DrugStock}"
+                          AutoGenerateColumns="False"
+                          IsReadOnly="True"
+                          GridLinesVisibility="All"
+                          BorderThickness="1" BorderBrush="Gray"
+                          Margin="10">
+                    <DataGrid.Columns>
+                        <DataGridTemplateColumn Header="Typ">
+                            <DataTemplate x:DataType="m:StanMagazynu">
+                                <materialIcons:MaterialIcon
+                                    Kind="{Binding Typ, Converter={StaticResource TypConverter}}"
+                                    Width="24" Height="24" HorizontalAlignment="Center" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTextColumn Header="Nazwa" Binding="{Binding PelnaNazwa}" Width="*" />
+                        <DataGridTextColumn Header="Ilość" Binding="{Binding DostepnaIlosc}" Width="*" />
+                        <DataGridTextColumn Header="Data Ważności"
+                                            Binding="{Binding DataWaznosci, StringFormat=\{0:yyyy-MM-dd\}, 
+                                            TargetNullValue='', FallbackValue=''}"
+                                            Width="*" />
+                    </DataGrid.Columns>
+                </DataGrid>
+            </TabItem>
+            <TabItem Header="Alerty">
+                <DataGrid ItemsSource="{Binding Alerts}"
+                          AutoGenerateColumns="False"
+                          IsReadOnly="True"
+                          GridLinesVisibility="All"
+                          BorderThickness="1" BorderBrush="Gray"
+                          Margin="10">
+                    <DataGrid.Columns>
+                        <DataGridTemplateColumn Header="Typ">
+                            <DataTemplate x:DataType="m:StanMagazynu">
+                                <materialIcons:MaterialIcon
+                                    Kind="{Binding Typ, Converter={StaticResource TypConverter}}"
+                                    Width="24" Height="24" HorizontalAlignment="Center" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTextColumn Header="Nazwa" Binding="{Binding PelnaNazwa}" Width="*" />
+                        <DataGridTextColumn Header="Ilość" Binding="{Binding DostepnaIlosc}" Width="*" />
+                        <DataGridTextColumn Header="Data Ważności"
+                                            Binding="{Binding DataWaznosci, StringFormat=\{0:yyyy-MM-dd\}, 
+                                            TargetNullValue='', FallbackValue=''}"
+                                            Width="*" />
+                    </DataGrid.Columns>
+                </DataGrid>
+            </TabItem>
+            <TabItem Header="Audyt">
+                <DataGrid ItemsSource="{Binding AuditLogs}"
+                          AutoGenerateColumns="False"
+                          IsReadOnly="True"
+                          GridLinesVisibility="All"
+                          BorderThickness="1" BorderBrush="Gray"
+                          Margin="10">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="60" />
+                        <DataGridTextColumn Header="Data"
+                                            Binding="{Binding DataOperacji, StringFormat={}{0:yyyy-MM-dd HH:mm:ss}}"
+                                            Width="160" />
+                        <DataGridTextColumn Header="Typ" Binding="{Binding TypOperacji}" Width="110" />
+                        <DataGridTextColumn Header="Encja" Binding="{Binding Encja}" Width="*" />
+                        <DataGridTextColumn Header="Klucz" Binding="{Binding KluczRekordu}" Width="90" />
+                        <DataGridTextColumn Header="Login" Binding="{Binding Login}" Width="120" />
+                        <DataGridTextColumn Header="Użytkownik" Binding="{Binding Uzytkownik}" Width="*" />
+                        <DataGridTextColumn Header="Opis" Binding="{Binding Opis}" Width="2*" />
+                    </DataGrid.Columns>
+                </DataGrid>
+            </TabItem>
+            <TabItem Header="Kopie zapasowe">
+                <Grid RowDefinitions="Auto, *, Auto" RowSpacing="10" Margin="10">
+                    <ScrollViewer Grid.Row="0"
+                                  HorizontalScrollBarVisibility="Auto"
+                                  VerticalScrollBarVisibility="Disabled">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <TextBlock Text="Folder:" VerticalAlignment="Center" />
+                            <TextBox Text="{Binding BackupDirectory}" IsReadOnly="True" Width="520" />
+                            <Button Content="Odśwież" Command="{Binding RefreshBackupsCommand}" />
+                            <Button Content="Utwórz kopię" Command="{Binding CreateBackupCommand}" />
+                        </StackPanel>
+                    </ScrollViewer>
+
+                    <DataGrid Grid.Row="1"
+                              ItemsSource="{Binding BackupFiles}"
+                              SelectedItem="{Binding SelectedBackup}"
+                              AutoGenerateColumns="False"
+                              IsReadOnly="True"
+                              GridLinesVisibility="All"
+                              BorderThickness="1"
+                              BorderBrush="Gray">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Plik" Binding="{Binding FileName}" Width="*" />
+                            <DataGridTextColumn Header="Utworzono"
+                                                Binding="{Binding CreatedAt, StringFormat={}{0:yyyy-MM-dd HH:mm:ss}}"
+                                                Width="170" />
+                            <DataGridTextColumn Header="Rozmiar" Binding="{Binding SizeLabel}" Width="110" />
+                            <DataGridTextColumn Header="Ścieżka" Binding="{Binding FullPath}" Width="2*" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+
+                    <Grid Grid.Row="2" ColumnDefinitions="*, Auto, Auto" ColumnSpacing="8">
+                        <StackPanel Spacing="4">
+                            <TextBlock Text="{Binding RestoreConfirmationHint}" />
+                            <TextBox Text="{Binding RestoreConfirmation}" Watermark="PRZYWROC" />
+                            <TextBlock Text="{Binding BackupMessage}" TextWrapping="Wrap" />
+                        </StackPanel>
+                        <Button Grid.Column="1"
+                                Content="Przywróć wybraną kopię"
+                                VerticalAlignment="Bottom"
+                                Command="{Binding RestoreBackupCommand}" />
+                    </Grid>
+                </Grid>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</UserControl>

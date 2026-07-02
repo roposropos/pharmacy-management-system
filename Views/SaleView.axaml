@@ -1,0 +1,107 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="1280" d:DesignHeight="720"
+             xmlns:c="using:Apteka.Views.Components"
+             xmlns:vm="using:Apteka.ViewModels"
+             x:Class="Apteka.Views.SaleView"
+             x:DataType="vm:SaleViewModel">
+    <Grid>
+        <Grid RowDefinitions="Auto, Auto, 2*, *">
+            <StackPanel Orientation="Horizontal" Margin="10" Spacing="10">
+                <c:IconButton Text="Wstecz" Icon="ArrowLeft" Command="{Binding GoBack}" />
+                <TextBlock Text="Sprzedaż " FontSize="24" FontWeight="Bold" VerticalAlignment="Center" />
+            </StackPanel>
+            <c:SearchWidget Grid.Row="1" />
+            <Grid Grid.Row="2" RowDefinitions="*, *">
+                <DataGrid ItemsSource="{Binding Items}"
+                          AutoGenerateColumns="False" IsReadOnly="True" GridLinesVisibility="All"
+                          BorderThickness="1" BorderBrush="Gray" Margin="10"
+                          SelectedItem="{Binding SelectedItem}">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="60" />
+                        <DataGridTextColumn Header="Nazwa" Binding="{Binding Nazwa}" Width="*" />
+                        <DataGridTextColumn Header="Producent" Binding="{Binding Producent}" Width="*" />
+                        <DataGridTextColumn Header="Substancja Czynna" Binding="{Binding SubstancjaCzynna}" Width="*" />
+                        <DataGridCheckBoxColumn Header="Bez Recepty" Binding="{Binding BezRecepty}" />
+                    </DataGrid.Columns>
+                </DataGrid>
+                <Grid Grid.Row="1" RowDefinitions="*, Auto" Margin="10, 0">
+                    <Grid ColumnDefinitions="*, *">
+                        <DataGrid ItemsSource="{Binding SelectedItem.Lek.Warianty}"
+                                  AutoGenerateColumns="False" IsReadOnly="True" GridLinesVisibility="All"
+                                  BorderThickness="1" BorderBrush="Gray" Margin="10"
+                                  SelectedItem="{Binding WariantLeku}">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="EAN" Binding="{Binding KodEan}" Width="*" />
+                                <DataGridTextColumn Header="Dawka" Binding="{Binding Dawka}" Width="*" />
+                                <DataGridTextColumn Header="Ilosc" Binding="{Binding Ilosc}" Width="120" />
+                                <DataGridTextColumn Header="Postac" Binding="{Binding Postac}" Width="auto" />
+                                <DataGridTextColumn Header="Dostepnosc" Binding="{Binding DostepnaIlosc}" Width="auto" />
+                            </DataGrid.Columns>
+                        </DataGrid>
+                        <DataGrid Grid.Column="1" ItemsSource="{Binding WariantLeku.PartieLekow}"
+                                  AutoGenerateColumns="False" IsReadOnly="True" GridLinesVisibility="All"
+                                  BorderThickness="1" BorderBrush="Gray" Margin="10"
+                                  SelectedItem="{Binding PartiaLeku}">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Numer Partii" Binding="{Binding NumerPartii}" />
+                                <DataGridTextColumn Header="Data Ważności"
+                                                    Binding="{Binding DataWaznosci, StringFormat=\{0:yyyy-MM-dd HH:mm\}}" />
+                                <DataGridTextColumn Header="Dostępna Ilość" Binding="{Binding IloscLaczna}" />
+                                <DataGridTextColumn Header="Zarezerwowana Ilość" Binding="{Binding IloscZarezerwowana}" />
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Grid>
+                    <ScrollViewer Grid.Row="1"
+                                  Margin="0,0,10,10"
+                                  HorizontalScrollBarVisibility="Auto"
+                                  VerticalScrollBarVisibility="Disabled">
+                        <StackPanel Orientation="Horizontal" Spacing="10" HorizontalAlignment="Right">
+                            <Button IsVisible="{Binding IsPrescription}" Content="Znajdź zamiennik"
+                                    Command="{Binding FindAlternatives}" />
+                            <Button Content="Dodaj" Command="{Binding AddItem}" />
+                            <Button Content="Usuń" Command="{Binding RemoveItem}" />
+                        </StackPanel>
+                    </ScrollViewer>
+                </Grid>
+            </Grid>
+            <Grid Grid.Row="3" RowDefinitions="Auto, *, Auto, Auto" Margin="10, 0, 0 10" RowSpacing="8">
+                <TextBlock Text="Koszyk " FontSize="24" FontWeight="Bold" VerticalAlignment="Center" />
+                <DataGrid Grid.Row="1"
+                          ItemsSource="{Binding ShoppingItems}"
+                          AutoGenerateColumns="False" GridLinesVisibility="All"
+                          BorderThickness="1" BorderBrush="Gray" Margin="10"
+                          SelectedItem="{Binding SelectedItem}">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Nazwa" Width="*" IsReadOnly="True" Binding="{Binding Name}" />
+                        <DataGridTextColumn Header="Ilosc" Width="*" IsReadOnly="True" Binding="{Binding Quantity}" />
+                        <DataGridTextColumn Header="Cena Jednostkowa" Width="*" IsReadOnly="False"
+                                            Binding="{Binding Price}" />
+                        <DataGridTextColumn Header="Cena Łączna" Width="*" IsReadOnly="True"
+                                            Binding="{Binding TotalPrice}" />
+                    </DataGrid.Columns>
+                </DataGrid>
+                <ScrollViewer Grid.Row="2"
+                              Margin="10,0"
+                              HorizontalScrollBarVisibility="Auto"
+                              VerticalScrollBarVisibility="Disabled">
+                    <StackPanel Orientation="Horizontal" Spacing="10" HorizontalAlignment="Right">
+                        <Button Content="Faktura" Command="{Binding MakeSale}" CommandParameter="faktura" />
+                        <Button Content="Paragon" Command="{Binding MakeSale}" CommandParameter="paragon" />
+                    </StackPanel>
+                </ScrollViewer>
+                <TextBlock Grid.Row="3"
+                           Text="{Binding ErrorMessage}"
+                           Foreground="Red"
+                           HorizontalAlignment="Right"
+                           Margin="10"
+                           IsVisible="{Binding ErrorMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+            </Grid>
+        </Grid>
+        <c:DialogHost DialogContent="{Binding CurrentDialogViewModel}"
+                      IsVisible="{Binding CurrentDialogViewModel, Converter={x:Static ObjectConverters.IsNotNull}}"
+                      CloseCommand="{Binding CloseDialogCommand}" />
+    </Grid>
+</UserControl>

@@ -1,0 +1,101 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="650"
+             xmlns:vm="using:Apteka.ViewModels"
+             xmlns:c="using:Apteka.Views.Components"
+             xmlns:apteka="clr-namespace:Apteka"
+             xmlns:grid="clr-namespace:Apteka.ViewModels.Grid"
+             x:Class="Apteka.Views.EmployeesView"
+             x:DataType="vm:EmployeesViewModel">
+    <UserControl.Resources>
+        <apteka:RowConverter x:Key="RowConverter" />
+    </UserControl.Resources>
+
+    <Grid RowDefinitions="Auto, Auto, *, Auto, Auto" RowSpacing="8">
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="10" Spacing="10">
+            <c:IconButton Text="Wstecz" Icon="ArrowLeft" Command="{Binding GoBackCommand}" />
+            <TextBlock Text="Pracownicy" FontSize="24" FontWeight="Bold" VerticalAlignment="Center" />
+        </StackPanel>
+
+        <c:SearchWidget Grid.Row="1" />
+
+        <DataGrid Grid.Row="2"
+                  ItemsSource="{Binding Items}"
+                  SelectedItem="{Binding SelectedItem}"
+                  AutoGenerateColumns="False"
+                  IsReadOnly="True"
+                  CanUserResizeColumns="True"
+                  GridLinesVisibility="All"
+                  BorderThickness="1"
+                  BorderBrush="Gray"
+                  Margin="10">
+            <DataGrid.Styles>
+                <Style Selector="DataGridRow" x:DataType="grid:UzytkownikViewModel">
+                    <Setter Property="Background" Value="{Binding IsModified, Converter={StaticResource RowConverter}}" />
+                </Style>
+            </DataGrid.Styles>
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="60" />
+                <DataGridTextColumn Header="Login" Binding="{Binding Login}" Width="*" />
+                <DataGridTextColumn Header="Imię i nazwisko" Binding="{Binding ImieNazwisko}" Width="*" />
+                <DataGridTextColumn Header="Rola" Binding="{Binding Rola}" Width="150" />
+                <DataGridCheckBoxColumn Header="Aktywny" Binding="{Binding Aktywny}" Width="100" />
+                <DataGridTextColumn Header="Ostatnie logowanie"
+                                    Binding="{Binding OstatnieLogowanie, StringFormat={}{0:yyyy-MM-dd}}" Width="150" />
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <Grid Grid.Row="3" ColumnDefinitions="*, *" Margin="10" ColumnSpacing="14" IsEnabled="{Binding IsEditing}">
+            <StackPanel Spacing="7">
+                <Grid ColumnDefinitions="150,*">
+                    <TextBlock Text="Login:" VerticalAlignment="Center" />
+                    <TextBox Grid.Column="1" Text="{Binding SelectedItem.Login}" />
+                </Grid>
+                <Grid ColumnDefinitions="150,*">
+                    <TextBlock Text="Imię:" VerticalAlignment="Center" />
+                    <TextBox Grid.Column="1" Text="{Binding SelectedItem.Imie}" />
+                </Grid>
+                <Grid ColumnDefinitions="150,*">
+                    <TextBlock Text="Nazwisko:" VerticalAlignment="Center" />
+                    <TextBox Grid.Column="1" Text="{Binding SelectedItem.Nazwisko}" />
+                </Grid>
+            </StackPanel>
+
+            <StackPanel Grid.Column="1" Spacing="7">
+                <Grid ColumnDefinitions="150,*">
+                    <TextBlock Text="Rola:" VerticalAlignment="Center" />
+                    <ComboBox Grid.Column="1"
+                              ItemsSource="{Binding Roles}"
+                              SelectedItem="{Binding SelectedItem.Rola}" />
+                </Grid>
+                <Grid ColumnDefinitions="150,*">
+                    <TextBlock Text="Aktywny:" VerticalAlignment="Center" />
+                    <CheckBox Grid.Column="1" IsChecked="{Binding SelectedItem.Aktywny}" />
+                </Grid>
+                <Grid ColumnDefinitions="150,*">
+                    <TextBlock Text="Nowe hasło:" VerticalAlignment="Center" />
+                    <TextBox Grid.Column="1"
+                             PasswordChar="*"
+                             Watermark="min. 8 znaków"
+                             Text="{Binding SelectedItem.NewPassword}" />
+                </Grid>
+            </StackPanel>
+        </Grid>
+
+        <ScrollViewer Grid.Row="4"
+                      Margin="10"
+                      HorizontalScrollBarVisibility="Auto"
+                      VerticalScrollBarVisibility="Disabled">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
+                <TextBlock Text="{Binding StatusMessage}" VerticalAlignment="Center" MaxWidth="360" TextWrapping="Wrap" />
+                <Button Content="Dodaj" Command="{Binding AddCommand}" IsEnabled="{Binding IsManager}" />
+                <Button Content="Edytuj" Command="{Binding EditCommand}" IsEnabled="{Binding IsManager}" />
+                <Button Content="Dezaktywuj" Command="{Binding DeleteCommand}" IsEnabled="{Binding IsManager}" />
+                <Button Content="Zapisz" Command="{Binding SaveCommand}" IsEnabled="{Binding IsManager}" />
+                <Button Content="Anuluj" Command="{Binding CancelCommand}" />
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

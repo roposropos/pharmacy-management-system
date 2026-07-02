@@ -1,0 +1,252 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="1100" d:DesignHeight="720"
+             xmlns:vm="using:Apteka.ViewModels"
+             xmlns:c="using:Apteka.Views.Components"
+             xmlns:grid="clr-namespace:Apteka.ViewModels.Grid"
+             xmlns:m="clr-namespace:Apteka.Models"
+             x:Class="Apteka.Views.PrescriptionsView"
+             x:DataType="vm:PrescriptionsViewModel">
+    <Grid RowDefinitions="Auto, *">
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="10" Spacing="10">
+            <c:IconButton Text="Wstecz" Icon="ArrowLeft" Command="{Binding GoBackCommand}" />
+            <TextBlock Text="Recepty i receptury" FontSize="24" FontWeight="Bold" VerticalAlignment="Center" />
+        </StackPanel>
+
+        <TabControl Grid.Row="1" Margin="10">
+            <TabItem Header="Recepty">
+                <Grid RowDefinitions="Auto, *, Auto" RowSpacing="10">
+                    <c:SearchWidget Grid.Row="0" />
+                    <DataGrid Grid.Row="1"
+                              ItemsSource="{Binding Items}"
+                              AutoGenerateColumns="False"
+                              IsReadOnly="True"
+                              SelectedItem="{Binding SelectedItem}">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="60" />
+                            <DataGridTextColumn Header="Data wystawienia"
+                                                Binding="{Binding DataWystawienia, StringFormat={}{0:yyyy-MM-dd}}" Width="140" />
+                            <DataGridTextColumn Header="Data realizacji"
+                                                Binding="{Binding DataRealizacji, StringFormat={}{0:yyyy-MM-dd}}" Width="140" />
+                            <DataGridTextColumn Header="Data ważności"
+                                                Binding="{Binding DataWaznosci, StringFormat={}{0:yyyy-MM-dd}}" Width="140" />
+                            <DataGridTextColumn Header="Kod" Binding="{Binding Kod}" Width="90" />
+                            <DataGridTextColumn Header="Klient" Binding="{Binding Klient}" Width="*" />
+                            <DataGridTextColumn Header="Lekarz" Binding="{Binding Lekarz}" Width="*" />
+                            <DataGridCheckBoxColumn Header="Zrealizowana" Binding="{Binding Zrealizowana}" Width="110" />
+                            <DataGridTextColumn Header="Poprzednia" Binding="{Binding PoprzedniaReceptaId}" Width="90" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+
+                    <ScrollViewer Grid.Row="2"
+                                  HorizontalScrollBarVisibility="Auto"
+                                  VerticalScrollBarVisibility="Disabled">
+                        <StackPanel Orientation="Horizontal" Spacing="10" HorizontalAlignment="Right">
+                            <Button Content="Znajdź poprzednią" Command="{Binding FindPreviousCommand}" />
+                            <Button Content="Realizuj gotowe leki" Command="{Binding RealizeCommand}" />
+                        </StackPanel>
+                    </ScrollViewer>
+                </Grid>
+            </TabItem>
+
+            <TabItem Header="Receptury">
+                <Grid RowDefinitions="*, Auto" ColumnDefinitions="*, 430" RowSpacing="10" ColumnSpacing="14">
+                    <DataGrid Grid.Row="0"
+                              Grid.Column="0"
+                              ItemsSource="{Binding Recipes}"
+                              SelectedItem="{Binding SelectedRecipe}"
+                              AutoGenerateColumns="False"
+                              IsReadOnly="True">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="60" />
+                            <DataGridTextColumn Header="Nazwa" Binding="{Binding Nazwa}" Width="*" />
+                            <DataGridTextColumn Header="Skład" Binding="{Binding SkladOpis}" Width="2*" />
+                            <DataGridTextColumn Header="Koszt" Binding="{Binding KosztPrzygotowania}" Width="90" />
+                            <DataGridCheckBoxColumn Header="Zatw." Binding="{Binding Zatwierdzona}" Width="80" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+
+                    <ScrollViewer Grid.Row="0" Grid.Column="1">
+                        <StackPanel Spacing="8">
+                            <TextBlock Text="Dane receptury" FontSize="16" FontWeight="SemiBold" />
+                            <Grid ColumnDefinitions="140,*" IsEnabled="{Binding CanManageCompounding}">
+                                <TextBlock Text="Nazwa:" VerticalAlignment="Center" />
+                                <TextBox Grid.Column="1" Text="{Binding SelectedRecipe.Nazwa}" />
+                            </Grid>
+                            <Grid ColumnDefinitions="140,*" IsEnabled="{Binding CanManageCompounding}">
+                                <TextBlock Text="Koszt:" VerticalAlignment="Center" />
+                                <TextBox Grid.Column="1" Text="{Binding SelectedRecipe.KosztPrzygotowania}" />
+                            </Grid>
+                            <Grid ColumnDefinitions="140,*" IsEnabled="{Binding CanManageCompounding}">
+                                <TextBlock Text="Zatwierdzona:" VerticalAlignment="Center" />
+                                <CheckBox Grid.Column="1" IsChecked="{Binding SelectedRecipe.Zatwierdzona}" />
+                            </Grid>
+                            <TextBox Text="{Binding SelectedRecipe.Opis}"
+                                     AcceptsReturn="True"
+                                     MinHeight="70"
+                                     IsEnabled="{Binding CanManageCompounding}" />
+
+                            <TextBlock Text="Składniki" FontSize="16" FontWeight="SemiBold" />
+                            <DataGrid ItemsSource="{Binding SelectedRecipe.Skladniki}"
+                                      SelectedItem="{Binding SelectedRecipeIngredient}"
+                                      AutoGenerateColumns="False"
+                                      MinHeight="130"
+                                      IsReadOnly="{Binding !CanManageCompounding}">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Surowiec" Binding="{Binding NazwaSurowca}" Width="*" />
+                                    <DataGridTextColumn Header="Ilość" Binding="{Binding Ilosc}" Width="90" />
+                                    <DataGridTextColumn Header="Jedn." Binding="{Binding Jednostka}" Width="70" />
+                                </DataGrid.Columns>
+                            </DataGrid>
+
+                            <Grid ColumnDefinitions="*, 100" ColumnSpacing="8" IsEnabled="{Binding CanManageCompounding}">
+                                <ComboBox ItemsSource="{Binding RawMaterials}"
+                                          SelectedItem="{Binding SelectedRawMaterial}">
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate x:DataType="grid:SurowiecViewModel">
+                                            <TextBlock Text="{Binding Nazwa}" />
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
+                                </ComboBox>
+                                <TextBox Grid.Column="1" Text="{Binding IngredientAmount}" />
+                            </Grid>
+                            <ScrollViewer HorizontalScrollBarVisibility="Auto"
+                                          VerticalScrollBarVisibility="Disabled">
+                                <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Right">
+                                    <Button Content="Dodaj recepturę"
+                                            Command="{Binding AddRecipeCommand}"
+                                            IsEnabled="{Binding CanManageCompounding}" />
+                                    <Button Content="Dodaj składnik"
+                                            Command="{Binding AddIngredientToRecipeCommand}"
+                                            IsEnabled="{Binding CanManageCompounding}" />
+                                    <Button Content="Usuń składnik"
+                                            Command="{Binding RemoveIngredientFromRecipeCommand}"
+                                            IsEnabled="{Binding CanManageCompounding}" />
+                                </StackPanel>
+                            </ScrollViewer>
+                            <ScrollViewer HorizontalScrollBarVisibility="Auto"
+                                          VerticalScrollBarVisibility="Disabled">
+                                <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Right">
+                                    <Button Content="Zapisz recepturę"
+                                            Command="{Binding SaveRecipeCommand}"
+                                            IsEnabled="{Binding CanManageCompounding}" />
+                                    <Button Content="Usuń recepturę"
+                                            Command="{Binding DeleteRecipeCommand}"
+                                            IsEnabled="{Binding CanManageCompounding}" />
+                                </StackPanel>
+                            </ScrollViewer>
+                            <TextBlock Text="{Binding RecipeMessage}" TextWrapping="Wrap" />
+
+                            <TextBlock Text="Wykonanie" FontSize="16" FontWeight="SemiBold" />
+                            <Grid ColumnDefinitions="140,*">
+                                <TextBlock Text="Dokument:" VerticalAlignment="Center" />
+                                <ComboBox Grid.Column="1"
+                                          ItemsSource="{Binding DocumentTypes}"
+                                          SelectedItem="{Binding DocumentType}" />
+                            </Grid>
+                            <Grid ColumnDefinitions="140,*">
+                                <TextBlock Text="Ilość:" VerticalAlignment="Center" />
+                                <TextBox Grid.Column="1" Text="{Binding RecipeExecutionAmount}" />
+                            </Grid>
+                            <Grid ColumnDefinitions="140,*">
+                                <TextBlock Text="Recepta:" VerticalAlignment="Center" />
+                                <TextBlock Grid.Column="1"
+                                           Text="{Binding SelectedItem.Id}"
+                                           VerticalAlignment="Center" />
+                            </Grid>
+                            <Button Content="Wykonaj recepturę"
+                                    HorizontalAlignment="Right"
+                                    Command="{Binding ExecuteRecipeCommand}" />
+                            <TextBlock Text="{Binding CompoundMessage}" TextWrapping="Wrap" />
+                        </StackPanel>
+                    </ScrollViewer>
+                </Grid>
+            </TabItem>
+
+            <TabItem Header="Surowce">
+                <Grid RowDefinitions="*, Auto, *, Auto" RowSpacing="10">
+                    <DataGrid Grid.Row="0"
+                              ItemsSource="{Binding RawMaterials}"
+                              SelectedItem="{Binding SelectedRawMaterial}"
+                              AutoGenerateColumns="False"
+                              IsReadOnly="{Binding !CanManageCompounding}">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="60" />
+                            <DataGridTextColumn Header="Nazwa" Binding="{Binding Nazwa}" Width="*" />
+                            <DataGridTextColumn Header="Typ" Binding="{Binding Typ}" Width="130" />
+                            <DataGridTextColumn Header="Jednostka" Binding="{Binding Jednostka}" Width="100" />
+                            <DataGridTextColumn Header="Dostępne" Binding="{Binding DostepnaIlosc}" Width="120" />
+                            <DataGridTextColumn Header="Najbliższa ważność"
+                                                Binding="{Binding NajblizszaDataWaznosci, StringFormat={}{0:yyyy-MM-dd}}" Width="150" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+
+                    <ScrollViewer Grid.Row="1"
+                                  HorizontalScrollBarVisibility="Auto"
+                                  VerticalScrollBarVisibility="Disabled">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
+                            <TextBlock Text="{Binding RawMaterialMessage}" VerticalAlignment="Center" TextWrapping="Wrap" MaxWidth="360" />
+                            <Button Content="Dodaj surowiec"
+                                    Command="{Binding AddRawMaterialCommand}"
+                                    IsEnabled="{Binding CanManageCompounding}" />
+                            <Button Content="Zapisz surowce"
+                                    Command="{Binding SaveRawMaterialsCommand}"
+                                    IsEnabled="{Binding CanManageCompounding}" />
+                        </StackPanel>
+                    </ScrollViewer>
+
+                    <DataGrid Grid.Row="2"
+                              ItemsSource="{Binding RawBatches}"
+                              SelectedItem="{Binding SelectedRawBatch}"
+                              AutoGenerateColumns="False"
+                              IsReadOnly="True">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Surowiec" Binding="{Binding NazwaSurowca}" Width="*" />
+                            <DataGridTextColumn Header="Partia" Binding="{Binding NumerPartii}" Width="*" />
+                            <DataGridTextColumn Header="Ważna do"
+                                                Binding="{Binding DataWaznosci, StringFormat={}{0:yyyy-MM-dd}}" Width="130" />
+                            <DataGridTextColumn Header="Dostępne" Binding="{Binding IloscDostepna}" Width="110" />
+                            <DataGridTextColumn Header="Rezerw." Binding="{Binding IloscZarezerwowana}" Width="100" />
+                            <DataGridTextColumn Header="Do użycia" Binding="{Binding IloscDoUzycia}" Width="110" />
+                            <DataGridTextColumn Header="Jedn." Binding="{Binding Jednostka}" Width="70" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+
+                    <ScrollViewer Grid.Row="3"
+                                  HorizontalScrollBarVisibility="Auto"
+                                  VerticalScrollBarVisibility="Disabled">
+                        <Grid ColumnDefinitions="*, Auto, Auto, Auto, Auto" ColumnSpacing="8"
+                              MinWidth="760"
+                              IsEnabled="{Binding CanManageCompounding}">
+                            <TextBox Watermark="Numer partii" Text="{Binding NewBatchNumber}" />
+                            <DatePicker Grid.Column="1" SelectedDate="{Binding NewBatchExpiry}" />
+                            <TextBox Grid.Column="2" Width="110" Watermark="Ilość" Text="{Binding NewBatchQuantity}" />
+                            <TextBlock Grid.Column="3"
+                                       Text="{Binding SelectedRawMaterial.Jednostka}"
+                                       VerticalAlignment="Center" />
+                            <Button Grid.Column="4" Content="Dodaj partię" Command="{Binding AddRawBatchCommand}" />
+                        </Grid>
+                    </ScrollViewer>
+                </Grid>
+            </TabItem>
+
+            <TabItem Header="Wykonania">
+                <DataGrid ItemsSource="{Binding CompoundExecutions}"
+                          AutoGenerateColumns="False"
+                          IsReadOnly="True">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="70" />
+                        <DataGridTextColumn Header="Data" Binding="{Binding DataWykonania, StringFormat={}{0:yyyy-MM-dd HH:mm}}" Width="160" />
+                        <DataGridTextColumn Header="Receptura" Binding="{Binding NazwaReceptury}" Width="*" />
+                        <DataGridTextColumn Header="Ilość" Binding="{Binding Ilosc}" Width="90" />
+                        <DataGridTextColumn Header="Koszt jedn." Binding="{Binding KosztJednostkowy}" Width="120" />
+                        <DataGridTextColumn Header="Recepta" Binding="{Binding IdRecepty}" Width="100" />
+                        <DataGridTextColumn Header="Sprzedaż" Binding="{Binding IdSprzedazy}" Width="100" />
+                    </DataGrid.Columns>
+                </DataGrid>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</UserControl>

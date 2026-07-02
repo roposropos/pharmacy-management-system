@@ -1,0 +1,54 @@
+APTEKA - RAPORT TESTOW PO POPRAWKACH UI
+
+Data: 2026-07-02
+Wersja paczki: 20260702_041440
+Zakres: poprawki przewijania i rozmiaru okna, build aplikacji, paczki macOS/Windows, finalny ZIP.
+
+1. Poprawione miejsca UI
+- Views/OrdersView.axaml: dodano pionowy ScrollViewer w formularzu nowego zamowienia.
+- Views/OrdersView.axaml: dodano poziomy ScrollViewer w pasku akcji zamowien.
+- Views/DeliveriesView.axaml: dodano poziomy ScrollViewer w pasku akcji dostaw.
+- Views/SaleView.axaml: przebudowano koszyk z wiersza Auto na kontrolowany obszar z DataGrid w wierszu gwiazdkowym, zeby koszyk nie wypychal przyciskow Faktura/Paragon poza widok.
+- Views/SaleView.axaml: dodano poziome przewijanie w pasku dodawania/usuwania pozycji i w pasku Faktura/Paragon.
+- Views/DrugsView.axaml: dodano pionowe przewijanie w panelach wariantu, korekty stanu i danych dostawcy.
+- Views/DrugsView.axaml: dodano poziome przewijanie w paskach akcji katalogu, wariantow i dostawcow.
+- Views/ReportsView.axaml: dodano poziome przewijanie w naglowku, filtrach dat oraz naglowku kopii zapasowych.
+- Views/EmployeesView.axaml: dodano poziome przewijanie w pasku akcji.
+- Views/PrescriptionsView.axaml: dodano poziome przewijanie w paskach akcji recept, receptur i surowcow oraz w formularzu dodawania partii surowca.
+- Views/MainWindow.axaml: ustawiono startowy rozmiar 1280x800 oraz minimum 980x640.
+
+2. Build aplikacji
+Polecenie:
+AVALONIA_TELEMETRY_OPTOUT=1 DOTNET_CLI_HOME=.dotnet_home dotnet build --no-restore
+
+Wynik:
+Kompilacja powiodla sie.
+Bledy: 0
+Ostrzezenia: 1
+
+Ostrzezenie:
+NU1900 - nie udalo sie pobrac danych o podatnosciach pakietow z NuGet przy ograniczonej sieci.
+Nie jest to blad XAML ani blad aplikacji i nie blokuje uruchomienia.
+
+3. Paczki
+macOS:
+- packages/Apteka-macos-arm64-20260702_041440.zip
+- packages/Apteka-macos-arm64-20260702_041440.dmg
+
+Windows:
+- packages/Apteka-win-x64-20260702_041440.zip
+
+4. Kontrola finalnego ZIP-a
+Plik:
+dist/final/Apteka_komplet_20260702_041440.zip
+
+Wynik:
+- zip -T: OK
+- Rozmiar ZIP: ok. 241 MB
+- Rozmiar rozpakowanego katalogu: ok. 386 MB
+- Potwierdzono obecnosc launcherow macOS/Windows, Apteka.app, Apteka.exe, bibliotek ODBC w Apteka.app, dokumentacji PDF, raportu testow oraz zmienionych plikow XAML.
+- Potwierdzono brak skopiowanych katalogow bin/obj/dist/tmp/.dotnet_home/.home w zrodle dolaczonym do paczki.
+
+5. Uwagi
+- DMG nie uruchamia aplikacji samym kliknieciem. Po dwukliku DMG otwiera zamontowany dysk; stamtad nalezy uruchomic Apteka.app albo Uruchom_Apteka.command.
+- Screeny nie zostaly dolaczone, zgodnie z poprzednia decyzja uzytkownika.
