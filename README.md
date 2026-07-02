@@ -340,7 +340,6 @@ Detailed documentation is available in Polish:
 
 - [Functional description and run guide](docs/reference/functional-description-pl.pdf)
 - [Final functionality and test report](docs/reference/final-report-pl.pdf)
-- [Original database project report](docs/reference/original-database-project-report-pl.pdf)
 
 ---
 
